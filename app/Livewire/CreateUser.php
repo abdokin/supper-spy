@@ -17,9 +17,7 @@ class CreateUser extends Component
 
     public $password = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'; // password
     public $showingModal = false;
-    public $listeners = [
-        'hideMe' => 'hideModal'
-    ];
+    
 
     public function render()
     {
@@ -34,6 +32,7 @@ class CreateUser extends Component
         );
         $this->reset(['name', 'email']);
         $this->hideCreateModal();
+        $this->dispatch("load-table");
         Toaster::success('User created!');
 
     }

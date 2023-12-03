@@ -10,9 +10,9 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-4">
                 <div class="flex justify-between items-center p-2">
                     <h1 class="text-white ">Users Table</h1>
-
-                <livewire:create-user />
-
+                        <div class="flex gap-2">
+                        <livewire:create-user />
+                    </div>
                 </div>
 
                 <livewire:users-table />

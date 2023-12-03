@@ -1,4 +1,5 @@
 <div>
+
   <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-md">
     <table class="w-full text-sm text-left text-white">
       <thead class="text-xs text-gray-700 uppercase bg-gray-100 border-b">
@@ -37,8 +38,7 @@
           @foreach($this->columns() as $column)
           <td class="py-3 px-6">
             <div class="flex items-center">
-              <x-dynamic-component :component="$column->component" :value="$row[$column->key]">
-              </x-dynamic-component>
+              <x-dynamic-component :component="$column->component" :value="$row[$column->key]"/>
             </div>
           </td>
           @endforeach
