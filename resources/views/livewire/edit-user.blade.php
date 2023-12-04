@@ -37,9 +37,9 @@
                 cancel
             </x-secondary-button>
 
-            <x-danger-button class="ml-2" wire:loading.attr="disabled" wire:click="edit">
+            <x-button class="ml-2" wire:loading.attr="disabled" wire:click="edit">
                 save
-            </x-danger-button>
+            </x-button>
         </x-slot>
     </x-dialog-modal>
 </div>

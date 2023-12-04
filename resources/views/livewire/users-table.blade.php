@@ -1,31 +1,57 @@
 <div>
     <div class="flex justify-between py-4">
-
-        <div>{{ count($selectedRows) }} Rows selected</div>
-
         <div class="flex gap-1">
             <livewire:create-user />
-            <x-dropdown align="right">
-                <x-slot name="trigger">
-                    <span class="inline-flex rounded-md">
-                        @if(count($selectedRows) === 0) 
-                        <x-button disabled >Actions</x-button>
+            @if (count($selectedRows) > 0)
+                <x-dropdown align="right">
+                    <x-slot name="trigger">
+                        <span class="inline-flex rounded-md">
+                            <x-button>Bulk Action</x-button>
+                        </span>
+                    </x-slot>
 
-                        @else 
-                        <x-button >Actions</x-button>
-                        @endif
-                    </span>
-                </x-slot>
+                    <x-slot name="content">
+                        <div class="">
+                            <x-button class="text-xs w-full rounded-none" ghost="true"
+                                wire:click="bulk_activate">Activate</x-button>
+                            <x-button class="text-xs w-full rounded-none" ghost="true"
+                                wire:click="bulk_disctivate">Disactivate</x-button>
+                            <x-button class="text-xs w-full rounded-none text-red-500" ghost="true"
+                                wire:click="bulk_delete">Delete</x-button>
+                        </div>
+                    </x-slot>
+                </x-dropdown>
+                <x-button class="text-base">Export</x-button>
 
-                <x-slot name="content">
-                    <div class="">
-                        <x-button class="text-xs w-full rounded-none" ghost="true" wire:click="bulk_activate">Activate</x-button>
-                        <x-button class="text-xs w-full rounded-none" ghost="true" wire:click="bulk_disctivate">Disactivate</x-button>
-                        <x-button class="text-xs w-full rounded-none text-red-500" ghost="true" wire:click="bulk_delete">Delete</x-button>
-                    </div>
-                </x-slot>
-            </x-dropdown>
+                <div>{{ count($selectedRows) }} users selected</div>
+            @endif
         </div>
+        <div class="flex gap-1">
+        <x-dropdown align="right">
+            <x-slot name="trigger">
+                <span class="inline-flex rounded-md">
+                    <x-button>
+                        {{ ($selectedStatuses && count($selectedStatuses) > 0) ? implode(', ', $selectedStatuses) : 'Status' }}
+                    </x-button>
+                </span>
+            </x-slot>
+        
+            <x-slot name="content">
+                <div class="flex flex-col">
+                    <x-button ghost="true" :primary="in_array('active', $selectedStatuses ?? [])" class="text-base rounded-none"
+                        wire:click="addStatusFilter('active')">Active</x-button>
+                    
+                    <x-button ghost="true" :primary="in_array('inactive', $selectedStatuses ?? [])" class="text-base rounded-none"
+                        wire:click="addStatusFilter('inactive')">Inactive</x-button>
+                    
+                    <x-button ghost="true" :primary="in_array('deleted', $selectedStatuses ?? [])" class="text-base rounded-none"
+                        wire:click="addStatusFilter('deleted')">Delete</x-button>
+                </div>
+            </x-slot>
+        </x-dropdown>
+
+        <x-button wire:click="resetFilter" danger="true">Reset Filter</x-button>
+    </div>
     </div>
 
     <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-md">
@@ -62,7 +88,8 @@
                             <th class="py-3 px-6 ">
                                 <div class="flex items-center">
                                     @if ($column->label == 'ID')
-                                        <x-checkbox wire:click="selectAll($event.target.checked)" wire:model="allSelected"/>
+                                        <x-checkbox wire:click="selectAll($event.target.checked)"
+                                            wire:model="allSelected" />
                                     @else
                                         {{ $column->label }}
                                     @endif

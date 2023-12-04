@@ -22,7 +22,8 @@ class UsersTable extends Component
     public $selectedRows = [];
     public $sortBy = 'id';
     public $sortDirection = 'desc';
-    public $allSelected =false;
+    public $allSelected = false;
+    public $selectedStatuses = null;
 
 
     public function query(): Builder
@@ -46,12 +47,18 @@ class UsersTable extends Component
 
 
     #[On('load-users-table')]
+    public function reload()
+    {
+        $this->resetSelect();
+        $this->render();
+    }
     public function render()
     {
         return view('livewire.users-table', [
             'data' => $this->data()
         ]);
     }
+
 
 
     #[Computed]
@@ -61,6 +68,9 @@ class UsersTable extends Component
             ->query()
             ->when($this->sortBy !== '', function ($query) {
                 $query->orderBy($this->sortBy, $this->sortDirection);
+            })
+            ->when($this->selectedStatuses !== null && count($this->selectedStatuses) > 0 , function ($query) {
+                    $query->whereIn('status', $this->selectedStatuses);
             })
             ->paginate($this->perPage);
     }
@@ -89,9 +99,23 @@ class UsersTable extends Component
     {
         $value = intval($value);
     }
+    public function addStatusFilter($status)
+    {
+        if ($this->selectedStatuses) {
+            if (in_array($status, $this->selectedStatuses)) {
+                $this->selectedStatuses = array_diff($this->selectedStatuses, [$status]);
+            } else {
+                $this->selectedStatuses = array_merge($this->selectedStatuses, [$status]);
+            }
+        } else {
+            $this->selectedStatuses = [$status];
+        }
 
-    public function resetSelect() {
-        $this->selectedRows =[];
+    }
+
+    public function resetSelect()
+    {
+        $this->selectedRows = [];
         $this->allSelected = false;
     }
 
@@ -128,6 +152,12 @@ class UsersTable extends Component
             $user->save();
         }
         Toaster::success('Users has been chnaged to be deleted!');
+        $this->resetSelect();
+    }
+
+    public function resetFilter()
+    {
+        $this->selectedStatuses = null;
         $this->resetSelect();
     }
 }
