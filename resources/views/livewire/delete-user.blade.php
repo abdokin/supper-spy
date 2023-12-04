@@ -1,8 +1,6 @@
 <div>
 
-    <x-danger-button class="" wire:click="showModal" wire:loading.attr="disabled">
-        {{ __('Delete') }}
-    </x-danger-button>
+    
     <x-confirmation-modal wire:model="showingModal">
         <x-slot name="title">
             Delete Account

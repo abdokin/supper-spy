@@ -9,15 +9,16 @@ class Column
 
     public string $label;
 
-    public function __construct($key, $label)
+    public function __construct($key, $label,$sortable=false)
     {
         $this->key = $key;
+        $this->sortable = $sortable;
         $this->label = $label;
     }
 
-    public static function make($key, $label)
+    public static function make($key, $label, $sortable=false)
     {
-        return new static($key, $label);
+        return new static($key, $label, $sortable);
     }
     public function component($component)
     {

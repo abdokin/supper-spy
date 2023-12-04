@@ -12,6 +12,7 @@ export default {
         './vendor/masmerise/livewire-toaster/resources/views/*.blade.php', // 👈
     ],
 
+    darkMode:"class",
     theme: {
         extend: {
             fontFamily: {

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Masmerise\Toaster\Toaster;
 
@@ -24,15 +25,6 @@ class EditUser extends Component
             // Rule::in(['active', 'inactive', 'deleted']), 
         ],
     ];
-
-    public function mount($user_id)
-    {
-
-        $this->user = User::findOrFail($user_id);
-        $this->name = $this->user->name;
-        $this->email = $this->user->email;
-        $this->status = $this->user->status;
-    }
     public function render()
     {
         return view('livewire.edit-user');
@@ -43,7 +35,7 @@ class EditUser extends Component
         $this->validate($this->rules);
 
         $existingUser = User::where('email', $this->email)
-            ->where('id', '!=', $this->user->id) 
+            ->where('id', '!=', $this->user->id)
             ->first();
 
         if ($existingUser) {
@@ -55,14 +47,20 @@ class EditUser extends Component
             'email' => $this->email,
             'status' => $this->status,
         ]);
-        $this->dispatch("load-table");
+        $this->dispatch("load-users-table");
         $this->hideEditModal();
         Toaster::success('User Edited!');
 
     }
 
-    public function showEditModal()
+    #[On("user-edit")]
+    public function showEditModal($user_id)
     {
+
+        $this->user = User::findOrFail($user_id);
+        $this->name = $this->user->name;
+        $this->email = $this->user->email;
+        $this->status = $this->user->status;
         $this->showingModal = true;
     }
 

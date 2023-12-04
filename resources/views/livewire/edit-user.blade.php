@@ -1,8 +1,5 @@
 <div>
 
-    <x-button class="" wire:click="showEditModal" wire:loading.attr="disabled">
-        {{ __('Edit') }}
-    </x-button>
     <x-dialog-modal wire:model="showingModal">
         <x-slot name="title">
             Edit user

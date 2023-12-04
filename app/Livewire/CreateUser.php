@@ -32,7 +32,7 @@ class CreateUser extends Component
         );
         $this->reset(['name', 'email']);
         $this->hideCreateModal();
-        $this->dispatch("load-table");
+        $this->dispatch("load-users-table");
         Toaster::success('User created!');
 
     }
