@@ -1,7 +1,7 @@
 <div>
     <div class="flex justify-between py-4">
         <div class="flex gap-1">
-            <livewire:create-user />
+            <livewire:create-city />
             @if (count($selectedRows) > 0)
                 <x-dropdown align="right">
                     <x-slot name="trigger">

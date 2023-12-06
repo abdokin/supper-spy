@@ -27,9 +27,12 @@ Route::middleware([
         Route::get('/', function () {
             return view('dashboard');
         })->name('dashboard.index');
-
-
         Route::get('/users', function () {
             return view('users');
         })->name('dashboard.users');
+
+
+        Route::get('/cities', function () {
+            return view('cities');
+        })->name('dashboard.cities');
     });

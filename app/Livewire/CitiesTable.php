@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\City;
 use App\Models\User;
 
 use App\Table\Column;
@@ -13,8 +14,7 @@ use Livewire\WithPagination;
 use Masmerise\Toaster\Toaster;
 
 
-class UsersTable extends Component
-{
+class CitiesTable extends Component {
 
     use WithPagination;
     public $perPage = 10;
@@ -26,35 +26,32 @@ class UsersTable extends Component
     public $selectedStatuses = null;
 
 
-    public function query(): Builder
-    {
-        return User::query();
+    public function query(): Builder {
+        return City::query()->join('regions', 'cities.region_id', '=', 'regions.id')
+            ->select('cities.*', 'regions.name as region_name');
     }
 
-    public function columns(): array
-    {
+    public function columns(): array {
         return [
             Column::make('id', 'ID'),
             Column::make('name', 'Name', true),
-            Column::make('email', 'Email',true),
-            Column::make('status', 'Status',true)->component('columns.users-status'),
-            Column::make('created_at', 'Created At',true)->component('columns.human-diff'),
-            Column::make('id', 'Actions')->component('columns.users-actions'),
+            Column::make('region_name', 'Region', true),
+            Column::make('status', 'Status', true)->component('columns.cities.status'),
+            Column::make('created_at', 'Created At', true)->component('columns.human-diff'),
+            Column::make('id', 'Actions')->component('columns.cities.actions'),
         ];
     }
 
 
 
 
-    #[On('load-users-table')]
-    public function reload()
-    {
+    #[On('load-cities-table')]
+    public function reload() {
         $this->resetSelect();
         $this->render();
     }
-    public function render()
-    {
-        return view('livewire.users-table', [
+    public function render() {
+        return view('livewire.cities-table', [
             'data' => $this->data()
         ]);
     }
@@ -62,47 +59,43 @@ class UsersTable extends Component
 
 
     #[Computed]
-    public function data()
-    {
+    public function data() {
         return $this
             ->query()
+
             ->when($this->sortBy !== '', function ($query) {
                 $query->orderBy($this->sortBy, $this->sortDirection);
             })
-            ->when($this->selectedStatuses !== null && count($this->selectedStatuses) > 0 , function ($query) {
-                    $query->whereIn('status', $this->selectedStatuses);
+            ->when($this->selectedStatuses !== null && count($this->selectedStatuses) > 0, function ($query) {
+                $query->whereIn('cities.status', $this->selectedStatuses);
             })
             ->paginate($this->perPage);
     }
 
-    public function sort($key)
-    {
+    public function sort($key) {
         $this->resetPage();
 
-        if ($this->sortBy === $key) {
+        if($this->sortBy === $key) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
             $this->sortBy = $key;
             $this->sortDirection = 'asc';
         }
     }
-    public function selectAll($checked)
-    {
-        if ($checked) {
+    public function selectAll($checked) {
+        if($checked) {
             $this->selectedRows = $this->data()->pluck('id')->toArray();
 
         } else {
             $this->selectedRows = [];
         }
     }
-    public function selectRow($value)
-    {
+    public function selectRow($value) {
         $value = intval($value);
     }
-    public function addStatusFilter($status)
-    {
-        if ($this->selectedStatuses) {
-            if (in_array($status, $this->selectedStatuses)) {
+    public function addStatusFilter($status) {
+        if($this->selectedStatuses) {
+            if(in_array($status, $this->selectedStatuses)) {
                 $this->selectedStatuses = array_diff($this->selectedStatuses, [$status]);
             } else {
                 $this->selectedStatuses = array_merge($this->selectedStatuses, [$status]);
@@ -113,50 +106,45 @@ class UsersTable extends Component
 
     }
 
-    public function resetSelect()
-    {
+    public function resetSelect() {
         $this->selectedRows = [];
         $this->allSelected = false;
     }
 
-    function bulk_activate()
-    {
+    function bulk_activate() {
 
-        $usersToUpdate = User::whereIn('id', $this->selectedRows)->get();
-        foreach ($usersToUpdate as $user) {
+        $citiesToUpdate = City::whereIn('id', $this->selectedRows)->get();
+        foreach($citiesToUpdate as $user) {
             $user->status = 'active';
             $user->save();
         }
         $this->resetSelect();
-        Toaster::success('Users has been chnaged to be active!');
+        Toaster::success('cities has been chnaged to be active!');
 
     }
 
-    function bulk_disctivate()
-    {
+    function bulk_disctivate() {
 
-        $usersToUpdate = User::whereIn('id', $this->selectedRows)->get();
-        foreach ($usersToUpdate as $user) {
+        $citiesToUpdate = City::whereIn('id', $this->selectedRows)->get();
+        foreach($citiesToUpdate as $user) {
             $user->status = 'inactive';
             $user->save();
         }
         $this->resetSelect();
-        Toaster::success('Users has been chnaged to be insactive!');
+        Toaster::success('cities has been chnaged to be insactive!');
     }
-    function bulk_delete()
-    {
+    function bulk_delete() {
 
-        $usersToUpdate = User::whereIn('id', $this->selectedRows)->get();
-        foreach ($usersToUpdate as $user) {
+        $citiesToUpdate = City::whereIn('id', $this->selectedRows)->get();
+        foreach($citiesToUpdate as $user) {
             $user->status = 'deleted';
             $user->save();
         }
-        Toaster::success('Users has been chnaged to be deleted!');
+        Toaster::success('cities has been chnaged to be deleted!');
         $this->resetSelect();
     }
 
-    public function resetFilter()
-    {
+    public function resetFilter() {
         $this->selectedStatuses = null;
         $this->resetSelect();
     }

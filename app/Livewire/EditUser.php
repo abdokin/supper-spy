@@ -20,10 +20,8 @@ class EditUser extends Component
     protected $rules = [
         'user.name' => 'required',
         'user.email' => 'required|email',
-        'user.status' => [
-            'required',
-            // Rule::in(['active', 'inactive', 'deleted']), 
-        ],
+        'user.status' => 'required|in:active,inactive,deleted', 
+
     ];
     public function render()
     {
