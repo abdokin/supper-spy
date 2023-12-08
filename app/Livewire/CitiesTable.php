@@ -24,6 +24,7 @@ class CitiesTable extends Component {
     public $sortDirection = 'desc';
     public $allSelected = false;
     public $selectedStatuses = null;
+    public $searchName = "";
 
 
     public function query(): Builder {
@@ -42,9 +43,6 @@ class CitiesTable extends Component {
         ];
     }
 
-
-
-
     #[On('load-cities-table')]
     public function reload() {
         $this->resetSelect();
@@ -56,8 +54,6 @@ class CitiesTable extends Component {
         ]);
     }
 
-
-
     #[Computed]
     public function data() {
         return $this
@@ -65,6 +61,9 @@ class CitiesTable extends Component {
 
             ->when($this->sortBy !== '', function ($query) {
                 $query->orderBy($this->sortBy, $this->sortDirection);
+            })
+            ->when($this->searchName !== "", function ($query) {
+                $query->where('cities.name', 'like', '%' . $this->searchName . '%');
             })
             ->when($this->selectedStatuses !== null && count($this->selectedStatuses) > 0, function ($query) {
                 $query->whereIn('cities.status', $this->selectedStatuses);

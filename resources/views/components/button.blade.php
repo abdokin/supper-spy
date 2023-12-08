@@ -1,4 +1,4 @@
-@props(['size' => '', 'danger' => false, 'primary' => false, 'secondary' => false, 'ghost' => false])
+@props(['size' => '', 'danger' => false, 'primary' => false, 'secondary' => false, 'ghost' => false,'success' => false])
 
 @php
     $sizes = [
@@ -28,6 +28,7 @@
             'active' => 'active:bg-gray-900 dark:active:bg-gray-300',
             'text' => 'text-white dark:text-gray-800',
         ],
+        
         'danger' => [
             'bg' => 'bg-red-600',
             'darkBg' => 'dark:bg-red-400',
@@ -46,7 +47,7 @@
         ],
     ];
 
-    $sizeClass = array_key_exists($size, $sizes) ? $sizes[$size] : $sizes['small'];
+    $sizeClass = array_key_exists($size, $sizes) ? $sizes[$size] : $sizes['medium'];
     $colorClass = '';
 
     if ($danger) {
@@ -57,7 +58,7 @@
         $colorClass = $colors['secondary'];
     } elseif ($ghost) {
         $colorClass = $colors['ghost'];
-    } else {
+    }else {
         // Default button style if no specific style is selected
         $colorClass = $colors['primary'];
     }
@@ -69,7 +70,7 @@
     {{ $attributes->merge([
         'type' => 'submit',
         'class' =>
-            'inline-flex items-center rounded-md font-semibold uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 ' .
+            'inline-flex items-center rounded-md font-semibold uppercase tracking-widest focus:outline-none transition ease-in-out duration-150 ' .
             $sizeClass .
             ' ' .
             $colorClass,

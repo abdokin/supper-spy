@@ -24,7 +24,7 @@ class UsersTable extends Component
     public $sortDirection = 'desc';
     public $allSelected = false;
     public $selectedStatuses = null;
-
+    public $searchName = "";
 
     public function query(): Builder
     {
@@ -68,6 +68,9 @@ class UsersTable extends Component
             ->query()
             ->when($this->sortBy !== '', function ($query) {
                 $query->orderBy($this->sortBy, $this->sortDirection);
+            })
+            ->when($this->searchName !== "", function ($query) {
+                $query->where('name', 'ilike', '%' . $this->searchName . '%');
             })
             ->when($this->selectedStatuses !== null && count($this->selectedStatuses) > 0 , function ($query) {
                     $query->whereIn('status', $this->selectedStatuses);
